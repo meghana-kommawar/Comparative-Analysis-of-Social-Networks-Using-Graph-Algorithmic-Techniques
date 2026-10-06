@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Social Network Algorithm Analysis
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="top-header">
+
+    <div class="header-circle"></div>
+
+    <div class="header-content">
+
+        <div class="header-badge">
+            GRAPH ALGORITHM VISUALIZATION
+        </div>
+
+        <h1>
+            SOCIAL NETWORK
+            <span>ALGORITHM ANALYSIS</span>
+        </h1>
+
+        <p>
+            Comparative Analysis of Social Networks Using
+            Graph Algorithmic Techniques
+        </p>
+
+    </div>
+
+</header>
+
+
+
+<main class="main-content">
+
+
+<!-- =========================================================
+     01 DATASET UPLOAD
+========================================================= -->
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <div class="section-number">
+            01
+        </div>
+
+        <div>
+
+            <h2>
+                DATASET UPLOAD
+            </h2>
+
+            <p>
+                Upload your social network CSV dataset.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="upload-card">
+
+        <!--
+            IMPORTANT:
+            The input name is "file".
+            Flask request.files["file"] will receive it.
+        -->
+
+        <form
+            id="uploadForm"
+            enctype="multipart/form-data"
+        >
+
+            <div class="upload-area">
+
+                <div class="upload-icon">
+                    CSV
+                </div>
+
+
+                <div class="upload-information">
+
+                    <h3>
+                        Upload Social Network Dataset
+                    </h3>
+
+                    <p>
+                        First column = Source
+                        |
+                        Second column = Target
+                    </p>
+
+                </div>
+
+
+                <!-- IMPORTANT ID -->
+                <input
+                    type="file"
+                    id="datasetFile"
+                    name="file"
+                    accept=".csv"
+                >
+
+            </div>
+
+
+            <!-- Upload status -->
+            <div
+                id="uploadStatus"
+                class="file-info"
+            >
+                No dataset selected.
+            </div>
+
+
+            <button
+                type="button"
+                id="buildNetworkBtn"
+                class="primary-button"
+            >
+                BUILD NETWORK
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     02 DATASET SUMMARY
+========================================================= -->
+
+<section
+    id="datasetSummary"
+    class="section hidden"
+>
+
+    <div class="section-heading">
+
+        <div class="section-number">
+            02
+        </div>
+
+        <div>
+
+            <h2>
+                DATASET SUMMARY
+            </h2>
+
+            <p>
+                Dataset and network statistics.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-grid">
+
+
+        <!-- NODES -->
+
+        <div class="summary-card">
+
+            <span>
+                NO. NODES
+            </span>
+
+            <strong id="nodeCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <!-- EDGES -->
+
+        <div class="summary-card">
+
+            <span>
+                NO. EDGES
+            </span>
+
+            <strong id="edgeCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <!-- COLUMNS -->
+
+        <div class="summary-card">
+
+            <span>
+                NO. COLUMNS
+            </span>
+
+            <strong id="columnCount">
+                0
+            </strong>
+
+        </div>
+
+
+        <!-- ROWS -->
+
+        <div class="summary-card">
+
+            <span>
+                NO. ROWS
+            </span>
+
+            <strong id="rowCount">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     03 TRAVERSAL ALGORITHMS
+========================================================= -->
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <div class="section-number">
+            03
+        </div>
+
+        <div>
+
+            <h2>
+                TRAVERSAL ALGORITHMS
+            </h2>
+
+            <p>
+                Select start and end nodes before running
+                BFS, DFS or Floyd-Warshall.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="traversal-panel">
+
+
+        <!-- START NODE -->
+
+        <div class="node-selector">
+
+            <label>
+                START NODE
+            </label>
+
+            <select id="startNode">
+
+                <option
+                    value=""
+                    selected
+                    disabled
+                >
+                    Select Start Node
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- END NODE -->
+
+        <div class="node-selector">
+
+            <label>
+                END NODE
+            </label>
+
+            <select id="endNode">
+
+                <option
+                    value=""
+                    selected
+                    disabled
+                >
+                    Select End Node
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="selectionMessage"
+            class="selection-message"
+        >
+            Select both nodes to run the traversal
+            and shortest-path algorithms.
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="button-group">
+
+            <button
+                class="algorithm-button"
+                onclick="runBFS()"
+            >
+                RUN BFS
+            </button>
+
+
+            <button
+                class="algorithm-button"
+                onclick="runDFS()"
+            >
+                RUN DFS
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     04 GRAPH ALGORITHMS
+========================================================= -->
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <div class="section-number">
+            04
+        </div>
+
+        <div>
+
+            <h2>
+                GRAPH ALGORITHMS
+            </h2>
+
+            <p>
+                Coloring, shortest path and maximum clique.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="algorithm-grid">
+
+
+        <!-- =================================================
+             GREEDY COLORING
+        ================================================== -->
+
+        <div class="algorithm-card">
+
+            <div class="algorithm-icon">
+                GC
+            </div>
+
+            <h3>
+                GREEDY COLORING
+            </h3>
+
+            <p>
+                Colors the network nodes while avoiding
+                conflicts between adjacent nodes.
+            </p>
+
+            <button
+                onclick="runGreedy()"
+            >
+                RUN ALGORITHM
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FLOYD WARSHALL
+        ================================================== -->
+
+        <div class="algorithm-card">
+
+            <div class="algorithm-icon">
+                FW
+            </div>
+
+            <h3>
+                FLOYD-WARSHALL
+            </h3>
+
+            <p>
+                Uses dynamic programming to find the
+                shortest path between selected nodes.
+            </p>
+
+            <button
+                onclick="runFloyd()"
+            >
+                RUN ALGORITHM
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             BRANCH AND BOUND
+        ================================================== -->
+
+        <div class="algorithm-card">
+
+            <div class="algorithm-icon">
+                BB
+            </div>
+
+            <h3>
+                BRANCH &amp; BOUND
+            </h3>
+
+            <p>
+                Finds and highlights the maximum clique
+                in the social network.
+            </p>
+
+            <button
+                onclick="runBranchBound()"
+            >
+                RUN ALGORITHM
+            </button>
+
+        </div>
+
+
+
+        <!-- =================================================
+             COMPARE ALGORITHMS
+        ================================================== -->
+
+        <div class="algorithm-card">
+
+            <div class="algorithm-icon">
+                ⏱
+            </div>
+
+            <h3>
+                COMPARE ALGORITHMS
+            </h3>
+
+            <p>
+                Compare execution time of all implemented
+                graph algorithms.
+            </p>
+
+            <button
+                onclick="compareExecutionTimes()"
+            >
+                COMPARE
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     05 SOCIAL NETWORK GRAPH
+========================================================= -->
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <div class="section-number">
+            05
+        </div>
+
+        <div>
+
+            <h2>
+                SOCIAL NETWORK GRAPH
+            </h2>
+
+            <p>
+                NetworkX Spring Layout
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="graph-card">
+
+        <div
+            id="networkGraph"
+            class="network-graph"
+        ></div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     06 ALGORITHM RESULTS
+========================================================= -->
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <div class="section-number">
+            06
+        </div>
+
+        <div>
+
+            <h2>
+                ALGORITHM RESULTS
+            </h2>
+
+            <p>
+                Complete results of each algorithm.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="results-grid">
+
+
+        <!-- =================================================
+             BFS RESULT
+        ================================================== -->
+
+        <div class="result-card">
+
+            <div class="result-header">
+                BFS
+            </div>
+
+            <div
+                id="bfsResult"
+                class="result-body"
+            >
+
+                <div class="result-placeholder">
+                    Select Start Node and End Node,
+                    then run BFS.
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             DFS RESULT
+        ================================================== -->
+
+        <div class="result-card">
+
+            <div class="result-header">
+                DFS
+            </div>
+
+            <div
+                id="dfsResult"
+                class="result-body"
+            >
+
+                <div class="result-placeholder">
+                    Select Start Node and End Node,
+                    then run DFS.
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             GREEDY RESULT
+        ================================================== -->
+
+        <div class="result-card">
+
+            <div class="result-header">
+                GREEDY COLORING
+            </div>
+
+            <div
+                id="greedyResult"
+                class="result-body"
+            >
+
+                <div class="result-placeholder">
+                    Run Greedy Coloring.
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FLOYD RESULT
+        ================================================== -->
+
+        <div class="result-card">
+
+            <div class="result-header">
+                FLOYD-WARSHALL
+            </div>
+
+            <div
+                id="floydResult"
+                class="result-body"
+            >
+
+                <div class="result-placeholder">
+                    Select Start Node and End Node,
+                    then run Floyd-Warshall.
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             BRANCH AND BOUND RESULT
+        ================================================== -->
+
+        <div class="result-card">
+
+            <div class="result-header">
+                BRANCH &amp; BOUND
+            </div>
+
+            <div
+                id="cliqueResult"
+                class="result-body"
+            >
+
+                <div class="result-placeholder">
+                    Run Branch &amp; Bound.
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             NETWORK INFORMATION
+        ================================================== -->
+
+        <div class="result-card">
+
+            <div class="result-header">
+                NETWORK INFORMATION
+            </div>
+
+            <div
+                id="result"
+                class="result-body"
+            >
+
+
+                <!-- STATUS -->
+
+                <div class="result-item">
+
+                    <span class="result-label">
+                        Status
+                    </span>
+
+                    <span
+                        class="result-value"
+                        id="networkStatus"
+                    >
+                        Waiting
+                    </span>
+
+                </div>
+
+
+                <!-- NODES -->
+
+                <div class="result-item">
+
+                    <span class="result-label">
+                        Nodes
+                    </span>
+
+                    <span
+                        class="result-value"
+                        id="networkNodeCount"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+                <!-- EDGES -->
+
+                <div class="result-item">
+
+                    <span class="result-label">
+                        Edges
+                    </span>
+
+                    <span
+                        class="result-value"
+                        id="networkEdgeCount"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+                <!-- SOURCE COLUMN -->
+
+                <div class="result-item">
+
+                    <span class="result-label">
+                        Source Column
+                    </span>
+
+                    <span
+                        class="result-value"
+                        id="networkSourceColumn"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+                <!-- TARGET COLUMN -->
+
+                <div class="result-item">
+
+                    <span class="result-label">
+                        Target Column
+                    </span>
+
+                    <span
+                        class="result-value"
+                        id="networkTargetColumn"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     07 ALGORITHM PERFORMANCE
+========================================================= -->
+
+<section class="section">
+
+    <div class="section-heading">
+
+        <div class="section-number">
+            07
+        </div>
+
+        <div>
+
+            <h2>
+                ALGORITHM PERFORMANCE
+            </h2>
+
+            <p>
+                Execution time comparison.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div style="
+    height: 430px;
+    width: 100%;
+    position: relative;
+">
+    <canvas id="timingChart"></canvas>
+</div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /*
+     * -------------------------------------------------------
+     * FILE SELECTION DISPLAY
+     * -------------------------------------------------------
+     *
+     * This makes the selected filename immediately appear.
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const fileInput =
+                document.getElementById("datasetFile");
+
+            const uploadStatus =
+                document.getElementById("uploadStatus");
+
+
+            if (!fileInput) {
+                console.error(
+                    "datasetFile input not found."
+                );
+                return;
+            }
+
+
+            fileInput.addEventListener(
+                "change",
+                function () {
+
+                    if (
+                        !this.files ||
+                        this.files.length === 0
+                    ) {
+
+                        uploadStatus.textContent =
+                            "No dataset selected.";
+
+                        uploadStatus.classList.remove(
+                            "success"
+                        );
+
+                        return;
+                    }
+
+
+                    const file =
+                        this.files[0];
+
+
+                    if (
+                        !file.name
+                            .toLowerCase()
+                            .endsWith(".csv")
+                    ) {
+
+                        uploadStatus.textContent =
+                            "Please select a CSV file.";
+
+                        uploadStatus.classList.remove(
+                            "success"
+                        );
+
+                        this.value = "";
+
+                        return;
+                    }
+
+
+                    uploadStatus.textContent =
+                        "Selected: " +
+                        file.name +
+                        " (" +
+                        formatFileSize(file.size) +
+                        ")";
+
+                    uploadStatus.classList.add(
+                        "success"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+     * -------------------------------------------------------
+     * FILE SIZE
+     * -------------------------------------------------------
+     */
+
+    function formatFileSize(bytes) {
+
+        if (bytes === 0) {
+            return "0 Bytes";
+        }
+
+
+        const units = [
+            "Bytes",
+            "KB",
+            "MB",
+            "GB"
+        ];
+
+
+        const index =
+            Math.floor(
+                Math.log(bytes) /
+                Math.log(1024)
+            );
+
+
+        return (
+            parseFloat(
+                (
+                    bytes /
+                    Math.pow(
+                        1024,
+                        index
+                    )
+                ).toFixed(2)
+            )
+            +
+            " "
+            +
+            units[index]
+        );
+
+    }
+
+</script>
+
+
+
+<!-- =========================================================
+     MAIN APPLICATION JAVASCRIPT
+========================================================= -->
+
+<script
+    src="{{ url_for('static', filename='js/app.js') }}"
+></script>
+
+
+</body>
+
+</html>
